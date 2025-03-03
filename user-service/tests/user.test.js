@@ -16,6 +16,8 @@ afterAll(async () => {
 });
 
 describe('User Service', () => {
+    let userToken;
+
     it('should register a new user', async () => {
         const response = await request(app)
             .post('/api/users/register')
@@ -29,14 +31,6 @@ describe('User Service', () => {
     });
 
     it('should login an existing user', async () => {
-        await request(app)
-            .post('/api/users/register')
-            .send({
-                username: 'testuser',
-                email: 'test@example.com',
-                password: 'password123',
-            });
-
         const response = await request(app)
             .post('/api/users/login')
             .send({
@@ -45,5 +39,15 @@ describe('User Service', () => {
             });
         expect(response.statusCode).toBe(200);
         expect(response.body.token).toBeDefined();
+        userToken = response.body.token;
+    });
+
+    it('should fetch the user profile', async () => {
+        const response = await request(app)
+            .get('/api/users/profile')
+            .set('Authorization', `Bearer ${userToken}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.user).toHaveProperty('username', 'testuser');
     });
 });
