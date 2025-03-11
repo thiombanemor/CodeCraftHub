@@ -1,16 +1,20 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-dotenv.config();
+require('dotenv').config(); // ✅ Charge les variables d’environnement
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        const mongoURI = process.env.MONGODB_URI;
+        if (!mongoURI) {
+            throw new Error('MONGODB_URI is not defined in .env file');
+        }
 
-        console.log('MongoDB connected');
+        await mongoose.connect(mongoURI);
+        console.log('✅ MongoDB connected');
     } catch (error) {
-        console.error('MongoDB connection failed:', error.message);
-        process.exit(1);
+        console.error('❌ MongoDB connection failed:', error.message);
+        if (process.env.NODE_ENV !== 'test') {
+            process.exit(1); // ✅ Évite que Jest plante en cas d'erreur
+        }
     }
 };
 

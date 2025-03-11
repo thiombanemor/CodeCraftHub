@@ -1,4 +1,7 @@
-require('dotenv').config();
+require('dotenv').config({ path: './user-service/.env' }); // ✅ Charge les variables d’environnement
+process.env.NODE_ENV = 'test'; // ✅ Définit NODE_ENV pour Jest
+
+// require('dotenv').config();  // ✅ Charge les variables d’environnement
 
 const request = require('supertest');
 const app = require('../src/app');
