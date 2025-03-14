@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
-require('dotenv').config(); // ✅ Charge les variables d’environnement
+require('dotenv').config(); // Load environment variables
 
+/**
+ * Connects to MongoDB using the URI from the environment variables.
+ * Automatically exits the process if the connection fails (except in test mode).
+ */
 const connectDB = async () => {
     try {
         const mongoURI = process.env.MONGODB_URI;
@@ -13,7 +17,7 @@ const connectDB = async () => {
     } catch (error) {
         console.error('❌ MongoDB connection failed:', error.message);
         if (process.env.NODE_ENV !== 'test') {
-            process.exit(1); // ✅ Évite que Jest plante en cas d'erreur
+            process.exit(1); // Prevents the app from running with a broken DB connection
         }
     }
 };

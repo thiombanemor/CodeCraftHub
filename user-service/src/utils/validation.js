@@ -1,6 +1,8 @@
 const Joi = require('joi');
 
-// Registration validation
+/**
+ * Validates registration data.
+ */
 const registerValidation = (data) => {
     const schema = Joi.object({
         username: Joi.string().min(3).max(30).required(),
@@ -10,7 +12,9 @@ const registerValidation = (data) => {
     return schema.validate(data);
 };
 
-// Login validation
+/**
+ * Validates login data.
+ */
 const loginValidation = (data) => {
     const schema = Joi.object({
         email: Joi.string().email().required(),
