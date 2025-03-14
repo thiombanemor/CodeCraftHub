@@ -85,4 +85,47 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+/**
+ * Updates the user profile (Protected route).
+ * @route PUT /api/users/profile/update
+ */
+const updateUserProfile = async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (username) user.username = username;
+        if (email) user.email = email;
+        if (password) user.password = await bcrypt.hash(password, 10);
+
+        await user.save();
+        res.json({ message: 'Profile updated successfully', user });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Deletes the user (Protected route).
+ * @route DELETE /api/users/profile/delete
+ */
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await user.deleteOne();
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, updateUserProfile, deleteUser };
+

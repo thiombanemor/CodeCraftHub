@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./user-service  # Path to Dockerfile
+    container_name: user-service
+    restart: always
+    ports:
+      - "5000:5000"  # Expose API on port 5000
+    depends_on:
+      - mongodb  # Ensure MongoDB starts first
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/user-service
+      - JWT_SECRET=56b7df86a0121eb5c540c754d8432479c17a490f5c602231d3c731082bd7536c
+      - PORT=5000
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"  # Expose MongoDB on localhost
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
